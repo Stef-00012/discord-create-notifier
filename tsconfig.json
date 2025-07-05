@@ -29,8 +29,7 @@
             "#/*": ["./data/constants/*"],
             "$/*": ["./data/functions/*"],
             "&/*": ["structures/*"],
-            "?/*": ["types/*"],
-            "$config": ["../config.ts"],
+            "^/*": ["types/*"],
             "@/*": ["./*"]
         }
 	}

@@ -1,4 +1,4 @@
-import type { WSAddonDataKeys } from "?/websocket";
+import type { WSAddonDataKeys } from "^/websocket";
 import {
 	defaultNewAddonMessage,
 	defaultUpdatedAddonMessage,
@@ -8,7 +8,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export type DBEvents = ("create" | "update")[];
 
 export const guilds = sqliteTable("guilds", {
-	commandName: text("guild_id").notNull().primaryKey(),
+	id: text("guild_id").notNull().primaryKey(),
 	webhook: text("webhook_urk").notNull(),
 	channel: text("channel_id").notNull(),
 	enabled: integer("enabled", {
