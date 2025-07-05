@@ -10,8 +10,13 @@ Create Addons Notifier is a Discord bot that connects to the [Create Addons](htt
 3. Setup the database (`bun db:setup`)
 4. run the bot (`bun start`)
 
-The bot can also be found [here](https://discord.com/oauth2/authorize?client_id=1390937506710683708&permissions=536870912&integration_type=0&scope=bot+applications.commands)
+The bot can also be found [here](https://discord.com/oauth2/authorize?client_id=1390937506710683708&permissions=536870912&integration_type=0&scope=bot+applications.commands) (Currently private as in-dev)
 
 ### Other Info
 
 The bot profile picture was generated from ChatGPT using the [Create mod](https://modrinth.com/mod/create) logo as base
+
+### TO-DO
+
+- [ ] Help command
+- [ ] Test Websocket handler
