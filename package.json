@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "db:setup": "npm run db:setup && npm run db:migrate",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.9",
+    "discord.js": "^14.21.0",
+    "drizzle-orm": "^0.44.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/bun": "^1.2.18",
+    "drizzle-kit": "^0.31.4"
+  }
+}
