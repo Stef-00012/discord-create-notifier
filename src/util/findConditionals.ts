@@ -1,4 +1,4 @@
-export function findConditinals(text: string) {
+export function findConditionals(text: string) {
 	const results: {
 		variable: string;
 		trueMsg: string;
@@ -35,9 +35,9 @@ export function findConditinals(text: string) {
 			const inner = raw.slice(3, -3);
 
 			const colonIndex = inner.indexOf(":");
-			const pipeIndex = inner.indexOf("|");
+			const pipeIndex = inner.lastIndexOf("|");
 
-			if (colonIndex === -1 && pipeIndex === -1 && pipeIndex > colonIndex) {
+			if (colonIndex !== -1 && pipeIndex !== -1 && pipeIndex > colonIndex) {
 				const variable = inner.slice(0, colonIndex);
 				const trueMsg = inner.slice(colonIndex + 1, pipeIndex);
 				const falseMsg = inner.slice(pipeIndex + 1);

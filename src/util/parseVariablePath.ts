@@ -30,13 +30,14 @@ export function parseVariablePath<Conditional extends boolean = false>(
 			return null;
 
 		if (key === "authorsUrl") {
-			current = previousObject["authors"];
+			// @ts-ignore
+			current = previousObject.authors;
 			previousKey = key;
 
 			if (i === parts.length - 1) {
 				return (current as WsAddonDataAuthor[])
 					.filter(Boolean)
-					.map((author) => `[${author.name}](${author.url})`)
+					.map((author) => `[${author.name}](<${author.url}>)`)
 					.join(", ");
 			}
 
@@ -58,7 +59,7 @@ export function parseVariablePath<Conditional extends boolean = false>(
 
 				return (previousObject[key] as WsAddonDataAuthor[])
 					.filter(Boolean)
-					.map((author) => `[${author.name}](${author.url})`)
+					.map((author) => `[${author.name}](<${author.url}>)`)
 					.join(", ");
 			}
 
@@ -69,12 +70,8 @@ export function parseVariablePath<Conditional extends boolean = false>(
 			typeof previousObject === "object" &&
 			previousObject !== null &&
 			("new" in previousObject || "old" in previousObject) &&
-			(Array.isArray(
-				(previousObject as { old?: unknown[]; new?: unknown[] }).old,
-			) ||
-				Array.isArray(
-					(previousObject as { old?: unknown[]; new?: unknown[] }).new,
-				))
+			(Array.isArray((previousObject as { old?: unknown[]; new?: unknown[] }).old) ||
+				Array.isArray((previousObject as { old?: unknown[]; new?: unknown[] }).new))
 		) {
 			const previousItem = previousObject as Record<
 				"old" | "new",
@@ -101,7 +98,7 @@ export function parseVariablePath<Conditional extends boolean = false>(
 
 					return (comparedArrays[key] as WsAddonDataAuthor[])
 						.filter(Boolean)
-						.map((author) => `[${author.name}](${author.url})`)
+						.map((author) => `[${author.name}](<${author.url}>)`)
 						.join(", ");
 				}
 
@@ -125,7 +122,7 @@ export function parseVariablePath<Conditional extends boolean = false>(
 
 					return (previousItem[key] as WsAddonDataAuthor[])
 						.filter(Boolean)
-						.map((author) => `[${author.name}](${author.url})`)
+						.map((author) => `[${author.name}](<${author.url}>)`)
 						.join(", ");
 				}
 
@@ -164,12 +161,12 @@ export function parseVariablePath<Conditional extends boolean = false>(
 			if (key === "created" || key === "modified") {
 				previousKey = key;
 
-				return new Date(previousObject[key] as string).toString();
+				return new Date(previousObject[key] as string).toLocaleString();
 			}
 
 			previousKey = key;
 
-			return new Date(previousObject[key] as string).toString();
+			return new Date(previousObject[key] as string).toLocaleString();
 		}
 
 		previousKey = key;

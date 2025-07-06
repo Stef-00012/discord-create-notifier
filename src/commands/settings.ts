@@ -168,7 +168,29 @@ export async function generateSettingsContainer(
 		keysSelect,
 	);
 
-	container.addActionRowComponents(keysRow);
+	container
+		.addActionRowComponents(keysRow)
+		.addSeparatorComponents(new SeparatorBuilder());
+
+	const messagesTextDisplay = new TextDisplayBuilder()
+		.setContent("### Messages\nCustomize the notfication message for new and updated addons")
+
+	container.addTextDisplayComponents(messagesTextDisplay);
+
+	const editNewMessageButton = new ButtonBuilder()
+		.setCustomId("settings_messageCreate")
+		.setLabel("Edit New Addon Message")
+		.setStyle(ButtonStyle.Secondary)
+
+	const editUpdateMessageButton = new ButtonBuilder()
+		.setCustomId("settings_messageUpdate")
+		.setLabel("Edit Updated Addon Message")
+		.setStyle(ButtonStyle.Secondary)
+
+	const messagesRow = new ActionRowBuilder<ButtonBuilder>()
+		.addComponents(editNewMessageButton, editUpdateMessageButton);
+
+	container.addActionRowComponents(messagesRow);
 
 	return container;
 }

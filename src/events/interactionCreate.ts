@@ -46,12 +46,23 @@ export default async function (client: Client, interaction: Interaction) {
         await command.autocomplete(client, interaction)
     }
 
-    if (interaction.isButton() || interaction.isAnySelectMenu()) {
-        const _type = interaction.isButton() ? "button" : "selects";
-        const type = interaction.isButton() ? "button" : "select menu";
+    if (interaction.isButton() || interaction.isAnySelectMenu() || interaction.isModalSubmit()) {
+        let _type: "buttons" | "selects" | "modals" = "buttons"
+        let type: "button" | "select menu" | "modal" = "button";
+
+        if (interaction.isButton()) {
+            _type = "buttons"
+            type = "button"
+        } else if (interaction.isAnySelectMenu()) {
+            _type = "selects"
+            type = "select menu"
+        } else if (interaction.isModalSubmit()) {
+            _type = "modals"
+            type = "modal"
+        }
 
         const fileName = interaction.customId.split("_")[0];
-        const filePath = `${__dirname}/../${_type}/${fileName}.ts`
+        const filePath = `${__dirname}/../components/${_type}/${fileName}.ts`
 
         if (!fs.existsSync(filePath)) return await interaction.reply({
             content: `Unknown ${type}`,

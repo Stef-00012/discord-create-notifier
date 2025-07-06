@@ -15,8 +15,3 @@ The bot can also be found [here](https://discord.com/oauth2/authorize?client_id=
 ### Other Info
 
 The bot profile picture was generated from ChatGPT using the [Create mod](https://modrinth.com/mod/create) logo as base
-
-### TO-DO
-
-- [ ] Help command
-- [ ] Test Websocket handler

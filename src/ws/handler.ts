@@ -13,6 +13,12 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ContainerBuilder,
+	MessageFlags,
+	SectionBuilder,
+	SeparatorBuilder,
+	TextDisplayBuilder,
+	ThumbnailBuilder,
 	WebhookClient,
 } from "discord.js";
 
@@ -99,12 +105,20 @@ export function handleWS(client: Client): void {
 						...addon.modData,
 					});
 
+					const iconUrl =
+						addon.modData.modrinth?.icon ?? addon.modData.curseforge?.icon;
+
+					const container = createAddonContainer(
+						msg,
+						addonUrlRow,
+						"create",
+						iconUrl,
+					);
+
 					try {
 						await webhookClient.send({
-							content: msg,
-							components: [addonUrlRow],
-							username: client.user?.displayName || client.user?.username,
-							avatarURL: client.user?.displayAvatarURL(),
+							components: [container],
+							flags: MessageFlags.IsComponentsV2,
 						});
 					} catch (e) {
 						console.error(
@@ -182,12 +196,15 @@ export function handleWS(client: Client): void {
 						names: addon.names,
 					});
 
+					const iconUrl =
+						addon.icons.modrinth ?? addon.icons.curseforge;
+
+					const container = createAddonContainer(msg, addonUrlRow, "update", iconUrl);
+
 					try {
 						await webhookClient.send({
-							content: msg,
-							components: [addonUrlRow],
-							username: client.user?.displayName || client.user?.username,
-							avatarURL: client.user?.displayAvatarURL(),
+							components: [container],
+							flags: MessageFlags.IsComponentsV2,
 						});
 					} catch (e) {
 						console.error(
@@ -199,4 +216,40 @@ export function handleWS(client: Client): void {
 			}
 		}
 	});
+}
+
+export function createAddonContainer(
+	text: string,
+	buttons: ActionRowBuilder<ButtonBuilder>,
+	type: "create" | "update",
+	iconUrl?: string | null,
+) {
+	const mainTitleTextDisplay = new TextDisplayBuilder().setContent(
+		`## ${type === "create" ? "New Addon Created" : "Addon Updated"}`,
+	);
+
+	const mainTextDisplay = new TextDisplayBuilder().setContent(text);
+
+	const container = new ContainerBuilder();
+
+	if (iconUrl) {
+		const thumbnail = new ThumbnailBuilder().setURL(iconUrl);
+
+		const section = new SectionBuilder()
+			.addTextDisplayComponents(mainTitleTextDisplay, mainTextDisplay)
+			.setThumbnailAccessory(thumbnail);
+
+		container.addSectionComponents(section);
+	} else {
+		container.addTextDisplayComponents(mainTitleTextDisplay, mainTextDisplay);
+	}
+
+	const platformsTitle = new TextDisplayBuilder().setContent("### Platforms");
+
+	container
+		.addSeparatorComponents(new SeparatorBuilder())
+		.addTextDisplayComponents(platformsTitle)
+		.addActionRowComponents(buttons);
+
+	return container;
 }

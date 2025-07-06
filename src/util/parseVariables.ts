@@ -9,16 +9,7 @@ export function parseVariables(
 
 	const text = parseConditional(_text, variables);
 
-	const parsedText = text.replace(variableRegex, (match, variable) => {
+	return text.replace(variableRegex, (match, variable) => {
 		return parseVariablePath(variable, variables) || match;
-	});
-
-	const urlRegex =
-		/\[(?<text>[^\]]+)\]\((?<url>http(s)?:\/\/([\w-])+\.([\w-]+[^)]*)+)\)/gim;
-
-	return parsedText.replace(urlRegex, (match, text, url) => {
-		if (text && url) return `[${text}](${url})`;
-
-		return match;
 	});
 }

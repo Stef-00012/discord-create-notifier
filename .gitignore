@@ -1,6 +1,7 @@
 .env*
 !.env.example
 /node_modules
-/__testWs
 /data/*.db
 /drizzle
+/__start.sh
+.bun
