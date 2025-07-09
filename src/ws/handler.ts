@@ -87,7 +87,7 @@ export function handleWS(client: Client): void {
 
 					if (addon.modData.curseforge) {
 						const button = new ButtonBuilder()
-							.setLabel("Open on Cursefrge")
+							.setLabel("Open on Curseforge")
 							.setStyle(ButtonStyle.Link)
 							.setEmoji({
 								id: process.env.CURSEFORGE_EMOJI_ID,
@@ -178,7 +178,7 @@ export function handleWS(client: Client): void {
 
 					if (addon.changes.curseforge) {
 						const button = new ButtonBuilder()
-							.setLabel("Open on Cursefrge")
+							.setLabel("Open on Curseforge")
 							.setStyle(ButtonStyle.Link)
 							.setEmoji({
 								id: process.env.CURSEFORGE_EMOJI_ID,

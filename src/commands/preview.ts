@@ -250,7 +250,7 @@ export default {
 
             if (newAddon.modData.curseforge) {
                 const button = new ButtonBuilder()
-                    .setLabel("Open on Cursefrge")
+                    .setLabel("Open on Curseforge")
                     .setStyle(ButtonStyle.Link)
                     .setEmoji({
                         id: process.env.CURSEFORGE_EMOJI_ID,
@@ -286,7 +286,7 @@ export default {
 
             if (updatedAddon.changes.curseforge) {
                 const button = new ButtonBuilder()
-                    .setLabel("Open on Cursefrge")
+                    .setLabel("Open on Curseforge")
                     .setStyle(ButtonStyle.Link)
                     .setEmoji({
                         id: process.env.CURSEFORGE_EMOJI_ID,
