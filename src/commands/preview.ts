@@ -2,7 +2,12 @@ import { parseVariables } from "@/util/parseVariables";
 import { createAddonContainer } from "@/ws/handler";
 import type { Command } from "^/discord";
 import type { CreateMessage, UpdateMessage } from "^/websocket";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from "discord.js";
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	MessageFlags,
+} from "discord.js";
 import { eq } from "drizzle-orm";
 
 const newAddon: CreateMessage["data"][0] = {
@@ -64,17 +69,19 @@ const newAddon: CreateMessage["data"][0] = {
 const updatedAddon: UpdateMessage["data"][0] = {
 	names: {
 		curseforge: "Create",
-		modrinth: "Create"
+		modrinth: "Create",
 	},
 	platforms: ["modrinth", "curseforge"],
 	slugs: {
 		curseforge: "create",
 		modrinth: "create",
 	},
-    icons: {
-        modrinth: "https://cdn.modrinth.com/data/LNytGWDc/61d716699bcf1ec42ed4926a9e1c7311be6087e2_96.webp",
-        curseforge: "https://media.forgecdn.net/avatars/1065/184/638598725500886388.png"
-    },
+	icons: {
+		modrinth:
+			"https://cdn.modrinth.com/data/LNytGWDc/61d716699bcf1ec42ed4926a9e1c7311be6087e2_96.webp",
+		curseforge:
+			"https://media.forgecdn.net/avatars/1065/184/638598725500886388.png",
+	},
 	changes: {
 		curseforge: {
 			name: {
@@ -196,115 +203,119 @@ const updatedAddon: UpdateMessage["data"][0] = {
 };
 
 export default {
-    name: "preview",
+	name: "preview",
 
-    async execute(client, interaction) {
-        if (!interaction.guildId) return interaction.reply({
-            content: "This command can only be used in a server",
-            flags: MessageFlags.Ephemeral
-        })
-        
-        const currentSettings = await client.db.query.guilds.findFirst({
-            where: eq(client.dbSchema.guilds.id, interaction.guildId),
-        })
-        
-        if (!currentSettings) {
-            await interaction.reply({
-                content:
-				"No settings found for this server, make sure to set the channel first through `/setchannel`",
-                flags: MessageFlags.Ephemeral,
-            });
-            
-            return null;
-        }
+	async execute(client, interaction) {
+		if (!interaction.guildId)
+			return interaction.reply({
+				content: "This command can only be used in a server",
+				flags: MessageFlags.Ephemeral,
+			});
 
-        const type = interaction.options.getString("type", true) as "create" | "update";
+		const currentSettings = await client.db.query.guilds.findFirst({
+			where: eq(client.dbSchema.guilds.id, interaction.guildId),
+		});
 
-        let msg: string;
-        const buttons = new ActionRowBuilder<ButtonBuilder>();
-        let iconUrl: string | null | undefined;
+		if (!currentSettings) {
+			await interaction.reply({
+				content:
+					"No settings found for this server, make sure to set the channel first through `/setchannel`",
+				flags: MessageFlags.Ephemeral,
+			});
 
-        if (type === "create") {
-            msg = parseVariables(currentSettings.newAddonMessage, {
-                platforms: newAddon.platforms,
-                ...newAddon.modData,
-            });
+			return null;
+		}
 
-            iconUrl =
-                newAddon.modData.modrinth?.icon ?? newAddon.modData.curseforge?.icon;
+		const type = interaction.options.getString("type", true) as
+			| "create"
+			| "update";
 
-            if (newAddon.modData.modrinth) {
-                    const button = new ButtonBuilder()
-                        .setLabel("Open on Modrinth")
-                        .setStyle(ButtonStyle.Link)
-                        .setEmoji({
-                            id: process.env.MODRINTH_EMOJI_ID,
-                            name: "modrinth",
-                        })
-                        .setURL(
-                            `https://modrinth.com/mod/${newAddon.modData.modrinth.slug}`,
-                        );
+		let msg: string;
+		const buttons = new ActionRowBuilder<ButtonBuilder>();
+		let iconUrl: string | null | undefined;
+		let color: number | undefined;
 
-                    buttons.addComponents(button);
-                }
+		if (type === "create") {
+			msg = parseVariables(currentSettings.newAddonMessage, {
+				platforms: newAddon.platforms,
+				...newAddon.modData,
+			});
 
-            if (newAddon.modData.curseforge) {
-                const button = new ButtonBuilder()
-                    .setLabel("Open on Curseforge")
-                    .setStyle(ButtonStyle.Link)
-                    .setEmoji({
-                        id: process.env.CURSEFORGE_EMOJI_ID,
-                        name: "curseforge",
-                    })
-                    .setURL(
-                        `https://curseforge.com/minecraft/mc-mods/${newAddon.modData.curseforge.slug}`,
-                    );
+			iconUrl =
+				newAddon.modData.modrinth?.icon ?? newAddon.modData.curseforge?.icon;
 
-                buttons.addComponents(button);
-            }
-        } else {
-            msg = parseVariables(currentSettings.updatedAddonMessage, {
-                ...updatedAddon.changes,
-                names: updatedAddon.names,
-            });
+			color =
+				newAddon.modData.modrinth?.color ?? newAddon.modData.curseforge?.color;
 
-            iconUrl =
-                updatedAddon.icons.modrinth ?? updatedAddon.icons.curseforge;
+			if (newAddon.modData.modrinth) {
+				const button = new ButtonBuilder()
+					.setLabel("Open on Modrinth")
+					.setStyle(ButtonStyle.Link)
+					.setEmoji({
+						id: process.env.MODRINTH_EMOJI_ID,
+						name: "modrinth",
+					})
+					.setURL(`https://modrinth.com/mod/${newAddon.modData.modrinth.slug}`);
 
-            if (updatedAddon.changes.modrinth) {
-                const button = new ButtonBuilder()
-                    .setLabel("Open on Modrinth")
-                    .setStyle(ButtonStyle.Link)
-                    .setEmoji({
-                        id: process.env.MODRINTH_EMOJI_ID,
-                        name: "modrinth",
-                    })
-                    .setURL(`https://modrinth.com/mod/${updatedAddon.slugs.modrinth}`);
+				buttons.addComponents(button);
+			}
 
-                buttons.addComponents(button);
-            }
+			if (newAddon.modData.curseforge) {
+				const button = new ButtonBuilder()
+					.setLabel("Open on Curseforge")
+					.setStyle(ButtonStyle.Link)
+					.setEmoji({
+						id: process.env.CURSEFORGE_EMOJI_ID,
+						name: "curseforge",
+					})
+					.setURL(
+						`https://curseforge.com/minecraft/mc-mods/${newAddon.modData.curseforge.slug}`,
+					);
 
-            if (updatedAddon.changes.curseforge) {
-                const button = new ButtonBuilder()
-                    .setLabel("Open on Curseforge")
-                    .setStyle(ButtonStyle.Link)
-                    .setEmoji({
-                        id: process.env.CURSEFORGE_EMOJI_ID,
-                        name: "curseforge",
-                    })
-                    .setURL(
-                        `https://curseforge.com/minecraft/mc-mods/${updatedAddon.slugs.curseforge}`,
-                    );
+				buttons.addComponents(button);
+			}
+		} else {
+			msg = parseVariables(currentSettings.updatedAddonMessage, {
+				...updatedAddon.changes,
+				names: updatedAddon.names,
+			});
 
-                buttons.addComponents(button);
-            }
-        }
+			iconUrl = updatedAddon.icons.modrinth ?? updatedAddon.icons.curseforge;
 
-        const container = createAddonContainer(msg, buttons, type, iconUrl);
+			if (updatedAddon.changes.modrinth) {
+				const button = new ButtonBuilder()
+					.setLabel("Open on Modrinth")
+					.setStyle(ButtonStyle.Link)
+					.setEmoji({
+						id: process.env.MODRINTH_EMOJI_ID,
+						name: "modrinth",
+					})
+					.setURL(`https://modrinth.com/mod/${updatedAddon.slugs.modrinth}`);
 
-        await interaction.reply({
-            components: [container],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-        })
-    }
+				buttons.addComponents(button);
+			}
+
+			if (updatedAddon.changes.curseforge) {
+				const button = new ButtonBuilder()
+					.setLabel("Open on Curseforge")
+					.setStyle(ButtonStyle.Link)
+					.setEmoji({
+						id: process.env.CURSEFORGE_EMOJI_ID,
+						name: "curseforge",
+					})
+					.setURL(
+						`https://curseforge.com/minecraft/mc-mods/${updatedAddon.slugs.curseforge}`,
+					);
+
+				buttons.addComponents(button);
+			}
+		}
+
+		const container = createAddonContainer(msg, buttons, type, iconUrl, color);
+
+		await interaction.reply({
+			components: [container],
+			flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+		});
+	},
 } satisfies Command;

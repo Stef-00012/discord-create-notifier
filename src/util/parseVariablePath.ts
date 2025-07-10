@@ -1,7 +1,7 @@
 import type { SupportTypes, WsAddonDataAuthor } from "^/websocket";
 import { compareArrays } from "@/util/compareArrays";
 
-const clientServerSideNames = {
+export const clientServerSideNames = {
 	unknown: "Unknown",
 	required: "Required",
 	optional: "Optional",
@@ -70,8 +70,12 @@ export function parseVariablePath<Conditional extends boolean = false>(
 			typeof previousObject === "object" &&
 			previousObject !== null &&
 			("new" in previousObject || "old" in previousObject) &&
-			(Array.isArray((previousObject as { old?: unknown[]; new?: unknown[] }).old) ||
-				Array.isArray((previousObject as { old?: unknown[]; new?: unknown[] }).new))
+			(Array.isArray(
+				(previousObject as { old?: unknown[]; new?: unknown[] }).old,
+			) ||
+				Array.isArray(
+					(previousObject as { old?: unknown[]; new?: unknown[] }).new,
+				))
 		) {
 			const previousItem = previousObject as Record<
 				"old" | "new",

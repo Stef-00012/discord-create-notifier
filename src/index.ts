@@ -31,6 +31,6 @@ for (const command of commands) {
 	client.commands.set(commandData.name, commandData);
 }
 
-handleWS(client)
+handleWS(client);
 
 client.login(process.env.TOKEN);

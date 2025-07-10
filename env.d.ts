@@ -1,7 +1,9 @@
 declare namespace NodeJS {
 	interface ProcessEnv extends ProcessEnv {
 		TOKEN: string;
-		WEBSOCKET_URL: string;
+		CREATE_ADDONS_BASE_URL: string;
+		CREATE_ADDONS_SECURE: string;
+		CREATE_ADDONS_MODS_PER_PAGE: string;
 		MODRINTH_EMOJI_ID: string;
 		CURSEFORGE_EMOJI_ID: string;
 	}

@@ -6,13 +6,13 @@ import schema from "@/db/schema";
 export class Client extends DiscordClient {
 	commands: Map<string, Command>;
 	db: typeof db;
-    dbSchema: typeof schema
+	dbSchema: typeof schema;
 
 	constructor(options: ClientOptions) {
 		super(options);
 
 		this.commands = new Map();
 		this.db = db;
-        this.dbSchema = schema
+		this.dbSchema = schema;
 	}
 }

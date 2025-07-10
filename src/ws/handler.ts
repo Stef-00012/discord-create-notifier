@@ -23,7 +23,9 @@ import {
 } from "discord.js";
 
 export function handleWS(client: Client): void {
-	const socket = new WebSocket(process.env.WEBSOCKET_URL);
+	const socket = new WebSocket(
+		`ws${process.env.CREATE_ADDONS_SECURE === "true" ? "s" : ""}://${process.env.CREATE_ADDONS_BASE_URL}/ws`,
+	);
 
 	socket.on("open", () => {
 		console.info("\x1b[32mConnected to the create addons WebSocket\x1b[0m");
@@ -113,6 +115,7 @@ export function handleWS(client: Client): void {
 						addonUrlRow,
 						"create",
 						iconUrl,
+						addon.modData.modrinth?.color ?? addon.modData.curseforge?.color,
 					);
 
 					try {
@@ -196,10 +199,14 @@ export function handleWS(client: Client): void {
 						names: addon.names,
 					});
 
-					const iconUrl =
-						addon.icons.modrinth ?? addon.icons.curseforge;
+					const iconUrl = addon.icons.modrinth ?? addon.icons.curseforge;
 
-					const container = createAddonContainer(msg, addonUrlRow, "update", iconUrl);
+					const container = createAddonContainer(
+						msg,
+						addonUrlRow,
+						"update",
+						iconUrl,
+					);
 
 					try {
 						await webhookClient.send({
@@ -223,6 +230,7 @@ export function createAddonContainer(
 	buttons: ActionRowBuilder<ButtonBuilder>,
 	type: "create" | "update",
 	iconUrl?: string | null,
+	color?: number,
 ) {
 	const mainTitleTextDisplay = new TextDisplayBuilder().setContent(
 		`## ${type === "create" ? "New Addon Created" : "Addon Updated"}`,
@@ -230,7 +238,7 @@ export function createAddonContainer(
 
 	const mainTextDisplay = new TextDisplayBuilder().setContent(text);
 
-	const container = new ContainerBuilder();
+	const container = new ContainerBuilder().setAccentColor(color);
 
 	if (iconUrl) {
 		const thumbnail = new ThumbnailBuilder().setURL(iconUrl);
